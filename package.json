@@ -1,0 +1,14 @@
+{
+  "name": "iamusingmac",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A static, browser-based Mac check with portable self-issued certificates.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check-static.mjs"
+  }
+}
