@@ -344,6 +344,7 @@ $('#verify-input').addEventListener('input', () => {
 $('#certificate-file').addEventListener('change', async event => {
   const file = event.target.files?.[0];
   if (!file) return;
+  event.target.value = '';
   const sequence = ++verificationSequence;
   $('#verify-button').disabled = true;
   $('#verify-button').textContent = 'Hội đang đọc file…';
@@ -364,7 +365,6 @@ $('#certificate-file').addEventListener('change', async event => {
       renderVerification({ valid: false, message: 'Chưa đọc được file. Hãy chọn lại hoặc dán mã đầy đủ.' });
     }
   }
-  event.target.value = '';
 });
 
 for (const link of document.querySelectorAll('[data-mode]')) link.addEventListener('click', event => { event.preventDefault(); selectMode(link.dataset.mode, { scroll: true }); });
