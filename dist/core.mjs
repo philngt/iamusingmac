@@ -86,10 +86,10 @@ export function detectDevice(nav = globalThis.navigator) {
   const agentOS = uaOS(ua);
   const legacyOS = platformOS(legacyPlatform);
   const hintedOS = platformOS(hintedPlatform);
-  // Android commonly exposes "Linux armv8l" through navigator.platform.
-  // That expected kernel/platform alias is not contradictory OS evidence.
-  const comparableLegacyOS = legacyOS === 'Linux' && (agentOS === 'Android' || hintedOS === 'Android')
-    ? 'Android' : legacyOS;
+  // Android and ChromeOS commonly expose a Linux navigator.platform value.
+  // Those expected kernel/platform aliases are not contradictory OS evidence.
+  const linuxAlias = [agentOS, hintedOS].find(os => os === 'Android' || os === 'ChromeOS');
+  const comparableLegacyOS = legacyOS === 'Linux' && linuxAlias ? linuxAlias : legacyOS;
   const reported = [agentOS, comparableLegacyOS, hintedOS].filter(os => os !== 'Unknown');
   const macEvidence = reported.includes('macOS');
   const iPadDesktop = macEvidence && touchPoints > 1;

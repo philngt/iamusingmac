@@ -3,97 +3,158 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f7fb">
-  <meta name="description" content="Bạn đang dùng Mac? Tuyệt. Đây là chiếc chứng nhận hoàn toàn để vui, có mã kiểm tra, để bạn flex với hội bạn thân.">
+  <meta name="theme-color" content="#f4efe3">
+  <meta name="description" content="Bạn đang dùng Mac? Chúc mừng. Nhận ngay giấy chứng nhận có mã kiểm tra, rồi gửi cho đứa bạn dùng Windows. Hoàn toàn để vui, hoàn toàn thiên vị.">
   <meta name="referrer" content="no-referrer">
-  <title>I’m using a Mac. — Có Mac, có giấy.</title>
+  <title>I’m using a Mac. — Có Mac, có giấy, có quyền khoe.</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
-  <a class="skip-link" href="#workspace">Đến phần tạo và xác minh</a>
-  <header class="site-header">
-    <div class="nav-wrap">
+  <a class="skip-link" href="#workspace">Đến phần cấp và soi giấy</a>
+
+  <header class="menubar">
+    <div class="menubar-inner">
       <a class="brand" href="#" aria-label="I’m using a Mac. Trang chủ">
-        <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="7" y="6" width="18" height="15" rx="3"/><path d="M4 25h24M12 14l3 3 6-6"/></svg></span>
+        <span class="brand-key" aria-hidden="true">⌘</span>
         <span>i’m using a mac<span class="brand-dot">.</span></span>
       </a>
       <nav aria-label="Điều hướng chính">
-        <a href="#create" data-mode="create" class="nav-create">Nhận chứng nhận</a>
-        <a href="#verify" data-mode="verify">Xác minh mã</a>
-        <a href="#about" class="nav-about">Chuyện gì đây?</a>
+        <a href="#create" data-mode="create" class="nav-create">Nhận giấy</a>
+        <a href="#verify" data-mode="verify">Soi giấy</a>
+        <a href="#compare" class="nav-compare">So sánh</a>
+        <a href="#about" class="nav-about">Hỏi xoáy</a>
       </nav>
-      <a class="github-link" href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer" aria-label="Mã nguồn trên GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.75-1.32-3.75-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15.99 1.7 2.59 1.21 3.22.93.1-.72.39-1.21.71-1.49-2.47-.28-5.07-1.23-5.07-5.49 0-1.21.43-2.2 1.14-2.97-.11-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14A10.6 10.6 0 0 1 12 6.26c.94 0 1.88.13 2.76.37 2.12-1.44 3.05-1.14 3.05-1.14.6 1.53.22 2.66.11 2.94.71.77 1.14 1.76 1.14 2.97 0 4.28-2.61 5.21-5.09 5.48.4.35.76 1.02.76 2.06V22c0 .3.2.64.76.53A11.1 11.1 0 0 0 12 .9Z"/></svg></a>
+      <div class="menubar-status">
+        <span class="status-flex" aria-hidden="true">FLEX 100%</span>
+        <time id="menubar-clock" class="menubar-clock" aria-hidden="true"></time>
+        <a class="github-link" href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer" aria-label="Mã nguồn trên GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.75-1.32-3.75-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15.99 1.7 2.59 1.21 3.22.93.1-.72.39-1.21.71-1.49-2.47-.28-5.07-1.23-5.07-5.49 0-1.21.43-2.2 1.14-2.97-.11-.28-.49-1.41.11-2.94 0 0 .93-.3 3.05 1.14A10.6 10.6 0 0 1 12 6.26c.94 0 1.88.13 2.76.37 2.12-1.44 3.05-1.14 3.05-1.14.6 1.53.22 2.66.11 2.94.71.77 1.14 1.76 1.14 2.97 0 4.28-2.61 5.21-5.09 5.48.4.35.76 1.02.76 2.06V22c0 .3.2.64.76.53A11.1 11.1 0 0 0 12 .9Z"/></svg></a>
+      </div>
     </div>
   </header>
+
+  <div class="ticker" role="region" aria-label="Bản tin cà khịa">
+    <div class="ticker-viewport"><div class="ticker-track">
+      <ul class="ticker-list">
+        <li><b>NÓNG:</b> Một người dùng Windows vừa thấy thanh Update chạy tới 100%. Chưa ai kiểm chứng.</li>
+        <li><b>LINUX:</b> “btw I use Arch” được nhắc lần thứ 3 trong 5 phút qua.</li>
+        <li><b>TIN ĐỒN:</b> 8GB RAM trên Mac bằng 16GB máy khác. Nguồn: một người rất tự tin.</li>
+        <li><b>THÔNG BÁO:</b> Hội không nhận iPad. Dù có bàn phím. Dù có chuột. Không.</li>
+        <li><b>KINH TẾ:</b> Mua hub USB-C thứ 4 trong năm được xem là bình thường.</li>
+        <li><b>THỊ TRƯỜNG:</b> Chỉ số Flex tăng 3 quý liên tiếp.</li>
+      </ul>
+      <ul class="ticker-list" aria-hidden="true">
+        <li><b>NÓNG:</b> Một người dùng Windows vừa thấy thanh Update chạy tới 100%. Chưa ai kiểm chứng.</li>
+        <li><b>LINUX:</b> “btw I use Arch” được nhắc lần thứ 3 trong 5 phút qua.</li>
+        <li><b>TIN ĐỒN:</b> 8GB RAM trên Mac bằng 16GB máy khác. Nguồn: một người rất tự tin.</li>
+        <li><b>THÔNG BÁO:</b> Hội không nhận iPad. Dù có bàn phím. Dù có chuột. Không.</li>
+        <li><b>KINH TẾ:</b> Mua hub USB-C thứ 4 trong năm được xem là bình thường.</li>
+        <li><b>THỊ TRƯỜNG:</b> Chỉ số Flex tăng 3 quý liên tiếp.</li>
+      </ul>
+    </div></div>
+    <button id="motion-toggle" class="motion-toggle" type="button" aria-pressed="false" aria-label="Tạm dừng chuyển động">Tạm dừng</button>
+  </div>
 
   <main>
     <section class="hero page-width" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <span class="eyebrow"><span class="tiny-spark" aria-hidden="true">✳</span> CHUYỆN NHỎ. FLEX TO.</span>
-        <h1 id="hero-title">Yep.<br>I’m using<br><span>a Mac.</span><span class="hero-check" aria-label="đã có giấy">✓</span></h1>
-        <p class="hero-description">Có Mac rồi. Giờ có cả giấy chứng nhận.<br>Gửi cho đứa bạn vẫn hỏi <em>“rồi sao?”</em></p>
+        <span class="eyebrow eyebrow-pill">HỘI NGƯỜI ĐANG DÙNG MAC · EST. 2026</span>
+        <h1 id="hero-title">Yep.<br>I’m using<br><mark>a Mac.</mark></h1>
+        <p class="hero-description">Có Mac thì phải có giấy. Có giấy thì phải gửi vào group chat. Đứa bạn dùng Windows sẽ hỏi <em>“rồi sao?”</em> — và đó chính là mục đích.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#create" data-mode="create">Lấy chứng nhận của tôi <span aria-hidden="true">✦</span></a>
-          <a class="button button-secondary" href="#verify" data-mode="verify">Kiểm tra mã của bạn</a>
+          <a class="button button-primary" href="#create" data-mode="create">Cấp giấy cho tôi <span aria-hidden="true">✦</span></a>
+          <a class="button button-secondary" href="#verify" data-mode="verify">Soi giấy đứa bạn</a>
         </div>
-        <p class="hero-footnote"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2"/><path d="M7 8V5a3 3 0 0 1 6 0v3"/></svg>Không đăng nhập. Không thu phí. Không có gì ghê gớm.</p>
+        <div class="roast-box">
+          <span class="roast-label" aria-hidden="true">🌶 CÀ KHỊA #<span id="roast-index">1</span></span>
+          <p id="roast-line" aria-live="polite">Có Mac mà không khoe thì cũng như chưa có.</p>
+          <button id="roast-button" class="text-button roast-button" type="button">Thêm phát nữa →</button>
+        </div>
+        <p class="hero-footnote">Không đăng nhập. Không thu phí. Không khách quan.</p>
       </div>
-      <div class="hero-art" aria-label="Hình minh họa chứng nhận vui cho người dùng Mac">
-        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-        <span class="art-star art-star-one" aria-hidden="true">✳</span><span class="art-star art-star-two" aria-hidden="true">✦</span>
-        <div class="floating-note note-top"><span aria-hidden="true">⌘</span> It’s a Mac thing.</div>
-        <div class="hero-certificate">
-          <div class="hero-cert-top"><span>THE VERY UNOFFICIAL</span><span class="sample-tag">BẢN MẪU</span></div>
-          <div class="mini-laptop" aria-hidden="true"><div class="laptop-screen"><div class="wallpaper-orb orb-a"></div><div class="wallpaper-orb orb-b"></div><span>hello.</span></div><div class="laptop-base"></div></div>
-          <p class="hero-cert-kicker">CERTIFICATE OF OBVIOUSNESS</p>
-          <h2>Mac user.<br>And proud of it.</h2>
-          <div class="hero-cert-name">Tên của bạn ở đây</div>
-          <div class="hero-cert-bottom"><span>100% để vui.<br>0% giá trị khoe lương.</span><span class="fun-seal">JUST<br>FOR FUN<span>✦</span></span></div>
+
+      <div class="hero-art" aria-label="Minh họa: chứng nhận Mac đè lên một hộp thoại lỗi đang không phản hồi">
+        <div class="error-dialog" aria-hidden="true">
+          <div class="error-title"><span>may_tinh_cua_ban.exe</span><span class="error-controls">—&nbsp;□&nbsp;✕</span></div>
+          <div class="error-body">
+            <span class="error-icon">!</span>
+            <p><strong>Ứng dụng không phản hồi.</strong><br>Đang cập nhật 37%… vẫn 37%.</p>
+          </div>
+          <div class="error-actions"><span>Chờ thêm</span><span>Chờ tiếp</span></div>
         </div>
-        <div class="floating-note note-bottom"><span class="note-check" aria-hidden="true">✓</span> Có Mac, có giấy.</div>
+
+        <div class="window hero-window">
+          <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="window-title">chung-nhan-mau.pdf</span></div>
+          <div class="hero-certificate">
+            <div class="hero-cert-top"><span>THE VERY UNOFFICIAL</span><span class="sample-tag">BẢN MẪU</span></div>
+            <div class="mini-laptop" aria-hidden="true"><div class="laptop-screen"><div class="wallpaper-orb orb-a"></div><div class="wallpaper-orb orb-b"></div><span>hello.</span></div><div class="laptop-base"></div></div>
+            <p class="hero-cert-kicker">CERTIFICATE OF OBVIOUSNESS</p>
+            <h2>Mac user.<br>Đã xác nhận.</h2>
+            <div class="hero-cert-name">Tên của bạn ở đây</div>
+            <div class="hero-cert-bottom"><span>100% để vui.<br>0% giá trị pháp lý.</span><span class="fun-seal">JUST<br>FOR FUN</span></div>
+          </div>
+        </div>
+
+        <span class="sticker sticker-bias" aria-hidden="true">100%<br>THIÊN VỊ</span>
+        <span class="sticker sticker-cmd" aria-hidden="true">⌘</span>
+        <span class="sticker sticker-note" aria-hidden="true">không phải<br>Apple cấp đâu 👀</span>
       </div>
     </section>
 
-    <div class="feature-strip page-width" aria-label="Điểm nổi bật">
-      <div><span class="feature-icon" aria-hidden="true">⌘</span><span>Mac thật thì vào việc</span></div>
-      <div><span class="feature-icon" aria-hidden="true">✧</span><span>Chứng nhận mang tên bạn</span></div>
-      <div><span class="feature-icon" aria-hidden="true">✓</span><span>Có mã, có đối chiếu</span></div>
-    </div>
+    <section id="compare" class="compare page-width" aria-labelledby="compare-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">BÁO CÁO ĐỘC LẬP*</p><h2 id="compare-title">Bảng so sánh khách quan tuyệt đối.</h2></div>
+        <span class="small-label">*độc lập với sự thật</span>
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-labelledby="compare-title">
+        <table class="compare-table">
+          <thead><tr><th scope="col"><span class="visually-hidden">Tiêu chí</span></th><th scope="col" class="col-mac">⌘ Mac</th><th scope="col">⊞ Windows</th><th scope="col">&gt;_ Linux</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Khởi động</th><td class="col-mac">Mở nắp là chạy</td><td>Đang cập nhật 1/37. Đừng tắt máy.</td><td>Khi nào compile kernel xong</td></tr>
+            <tr><th scope="row">Phím quyền lực nhất</th><td class="col-mac">⌘</td><td>Ctrl + Alt + Del</td><td>sudo</td></tr>
+            <tr><th scope="row">Cổng kết nối</th><td class="col-mac">USB-C. Và… USB-C. Nhớ mua hub.</td><td>Đủ cả, kể cả cổng từ 2009</td><td>Cắm gì cũng được, driver hên xui</td></tr>
+            <tr><th scope="row">Chơi game</th><td class="col-mac">Câu hỏi tiếp theo.</td><td>Vô địch. Không bàn cãi.</td><td>Proton đang cố hết sức</td></tr>
+            <tr><th scope="row">Giá</th><td class="col-mac">Một quả thận</td><td>Còn thận để đi ăn</td><td>Miễn phí, trả bằng cuối tuần</td></tr>
+            <tr class="row-verdict"><th scope="row">Được cấp giấy ở đây</th><td class="col-mac"><span class="yes">✓ Có</span></td><td><span class="no">✕ Rất tiếc</span></td><td><span class="no">✕ Không, nhưng nể</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
     <section id="workspace" class="workspace page-width" aria-labelledby="workspace-title">
-      <div class="section-heading"><div><p class="eyebrow">PHÒNG CẤP GIẤY HỆ TÁO</p><h2 id="workspace-title">Một chút thủ tục. Rất nhiều tự hào.</h2></div><span class="small-label">EST. 2026 · JUST FOR FUN</span></div>
-      <div class="workspace-shell">
+      <div class="section-heading"><div><p class="eyebrow">PHÒNG CẤP GIẤY HỆ TÁO</p><h2 id="workspace-title">Một chút thủ tục. Rất nhiều tự hào.</h2></div><span class="small-label">Giờ làm việc: khi bạn có Mac</span></div>
+      <div class="window workspace-shell">
+        <div class="window-bar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="window-title">Phòng cấp giấy — hội-táo.app</span></div>
         <div class="tabs" role="tablist" aria-label="Chọn chức năng">
-          <button id="tab-create" role="tab" aria-selected="true" aria-controls="panel-create" tabindex="0" class="tab active" data-tab="create"><span aria-hidden="true">✦</span> Nhận chứng nhận</button>
-          <button id="tab-verify" role="tab" aria-selected="false" aria-controls="panel-verify" tabindex="-1" class="tab" data-tab="verify"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 6 2v5c0 4-6 8-6 8S4 13 4 9V4Z"/><path d="m7 9 2 2 4-4"/></svg> Xác minh mã</button>
+          <button id="tab-create" role="tab" aria-selected="true" aria-controls="panel-create" tabindex="0" class="tab active" data-tab="create"><span aria-hidden="true">✦</span> Nhận giấy</button>
+          <button id="tab-verify" role="tab" aria-selected="false" aria-controls="panel-verify" tabindex="-1" class="tab" data-tab="verify"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 6 2v5c0 4-6 8-6 8S4 13 4 9V4Z"/><path d="m7 9 2 2 4-4"/></svg> Soi giấy</button>
         </div>
 
         <div id="panel-create" class="tab-panel create-layout" role="tabpanel" aria-labelledby="tab-create">
           <div class="create-form-wrap">
             <div id="device-status" class="device-status checking" role="status">
               <span class="device-symbol" id="device-symbol" aria-hidden="true">⌘</span>
-              <div><span class="status-eyebrow" id="device-eyebrow">KIỂM TRA ĐẦU VÀO</span><h3 id="device-title">Để xem bạn thuộc hệ nào…</h3><p id="device-description">Đang đọc thông tin trình duyệt.</p></div>
+              <div><span class="status-eyebrow" id="device-eyebrow">ĐANG SOI HỒ SƠ</span><h3 id="device-title">Để xem bạn thuộc hệ nào…</h3><p id="device-description">Đang hỏi trình duyệt vài câu riêng tư (không riêng tư lắm).</p></div>
             </div>
-            <details class="device-details"><summary>Thông tin máy đang được nhận diện <span aria-hidden="true">+</span></summary><dl id="device-facts"></dl><p class="fine-print">Dựa trên thông tin trình duyệt, có thể bị giả lập. Đây là trò vui, không phải xác thực phần cứng.</p></details>
+            <details class="device-details"><summary>Hội đang nhìn thấy gì về máy bạn? <span aria-hidden="true">+</span></summary><dl id="device-facts"></dl><p class="fine-print">Dựa trên thông tin trình duyệt tự khai, có thể bị giả lập. Đây là trò vui, không phải xác thực phần cứng.</p></details>
             <form id="issue-form">
-              <label class="field-label" for="certificate-name">Tên trên giấy chứng nhận</label>
-              <div class="input-wrap"><input id="certificate-name" name="name" type="text" maxlength="60" placeholder="Điền tên thật oách của bạn" autocomplete="nickname" required aria-describedby="name-hint"><span aria-hidden="true">✎</span></div>
-              <p id="name-hint" class="field-hint">Biệt danh cũng được. Hội không kiểm tra căn cước.</p>
-              <button id="issue-button" class="button button-primary button-wide" type="submit" disabled>Tạo chứng nhận của tôi <span aria-hidden="true">✦</span></button>
+              <label class="field-label" for="certificate-name">Tên in trên giấy</label>
+              <div class="input-wrap"><input id="certificate-name" name="name" type="text" maxlength="60" placeholder="Tên thật oách, càng oách càng tốt" autocomplete="nickname" required aria-describedby="name-hint"><span aria-hidden="true">✎</span></div>
+              <p id="name-hint" class="field-hint">Biệt danh cũng được. Hội không kiểm tra căn cước, chỉ kiểm tra hệ điều hành.</p>
+              <button id="issue-button" class="button button-primary button-wide" type="submit" disabled>Cấp giấy cho tôi <span aria-hidden="true">✦</span></button>
               <p id="issue-feedback" class="form-feedback" aria-live="polite"></p>
             </form>
-            <button id="recheck-button" class="text-button" type="button">Tôi có Mac mà? Kiểm tra lại</button>
-            <p class="privacy-note"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2"/><path d="M7 8V5a3 3 0 0 1 6 0v3"/></svg>Tên nằm trong chứng nhận bạn chia sẻ. Lịch sử chỉ lưu trên trình duyệt này.</p>
+            <button id="recheck-button" class="text-button" type="button">Tôi có Mac thật mà! Soi lại đi</button>
+            <p class="privacy-note">🔒 Tên nằm trong giấy bạn chia sẻ. Lịch sử chỉ lưu trên trình duyệt này.</p>
           </div>
 
           <div class="certificate-side">
-            <div class="preview-heading"><span id="preview-label">CHỨNG NHẬN TƯƠNG LAI CỦA BẠN</span><span id="preview-state" class="preview-chip">Xem trước</span></div>
+            <div class="preview-heading"><span id="preview-label">GIẤY TƯƠNG LAI CỦA BẠN</span><span id="preview-state" class="preview-chip">Xem trước</span></div>
             <article id="certificate-card" class="certificate-card" aria-label="Chứng nhận người dùng Mac">
               <div class="cert-top"><span class="cert-logo" aria-hidden="true">⌘</span><span>HỘI NGƯỜI<br>ĐANG DÙNG MAC</span><span class="cert-edition">THE UNOFFICIAL<br>MAC CLUB</span></div>
-              <div class="cert-main"><p>TRÂN TRỌNG XÁC NHẬN</p><h3 id="cert-name">Tên của bạn</h3><p class="cert-statement">đang dùng <strong>Mac.</strong><br>Và muốn mọi người biết điều đó.</p></div>
-              <div class="cert-meta"><div><span>HỆ ĐIỀU HÀNH</span><strong id="cert-os">macOS</strong></div><div><span>NGÀY GIA NHẬP</span><strong id="cert-date">Sau khi cấp giấy</strong></div><span class="cert-stamp" aria-label="Chỉ để vui">FOR<br>FUN<small>✦ ✦ ✦</small></span></div>
+              <div class="cert-main"><p>TRÂN TRỌNG XÁC NHẬN</p><h3 id="cert-name">Tên của bạn</h3><p class="cert-statement">đang dùng <strong>Mac.</strong><br>Và sẽ nhắc chuyện đó ít nhất 3 lần mỗi ngày.</p></div>
+              <div class="cert-meta"><div><span>HỆ ĐIỀU HÀNH</span><strong id="cert-os">macOS</strong></div><div><span>NGÀY GIA NHẬP</span><strong id="cert-date">Sau khi cấp giấy</strong></div><span class="cert-stamp" aria-label="Chỉ để vui">FOR<br>FUN</span></div>
               <div class="cert-bottom"><span id="cert-id">BẢN MẪU · CHƯA PHÁT HÀNH</span><span>i’m using a mac.</span></div>
               <p class="cert-disclaimer">Chứng nhận vui từ trình duyệt. Không liên quan đến Apple.</p>
             </article>
@@ -101,41 +162,47 @@
               <button id="copy-link" class="button button-dark" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 12 4-4M7 13H5a4 4 0 0 1 0-8h3M12 5h3a4 4 0 0 1 0 8h-2"/></svg> Sao chép link để flex</button>
               <button id="download-image" class="button button-white" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v11m-4-4 4 4 4-4M3 14v3h14v-3"/></svg> Tải ảnh PNG</button>
               <div class="secondary-actions"><button id="copy-code" class="text-button" type="button">Sao chép mã đầy đủ</button><button id="download-json" class="text-button" type="button">Tải file chứng nhận</button></div>
-              <p class="field-hint">Gửi link, mã đầy đủ hoặc file để bạn bè kiểm tra trên máy khác. Mã ngắn trên ảnh chỉ là mã đối chiếu.</p>
+              <p class="field-hint">Gửi link, mã đầy đủ hoặc file để bạn bè soi trên máy khác. Mã ngắn trên ảnh chỉ để đối chiếu.</p>
             </div>
-            <p id="preview-note" class="preview-note">Giấy này không tăng hiệu năng máy.<br>Nhưng có thể tăng độ khó chịu của đứa bạn.</p>
+            <p id="preview-note" class="preview-note">Giấy này không tăng hiệu năng máy.<br>Nhưng tăng đáng kể độ khó chịu của đứa bạn.</p>
           </div>
         </div>
 
         <div id="panel-verify" class="tab-panel verify-layout" role="tabpanel" aria-labelledby="tab-verify" hidden>
           <div class="verify-form-wrap">
-            <span class="eyebrow">TIN BẠN. NHƯNG VẪN CHECK.</span><h3>Bạn có giấy tờ không?</h3><p class="panel-description">Đứa bạn flex có Mac? Dán mã hoặc link nó gửi vào đây để đối chiếu.</p>
-            <form id="verify-form"><label class="field-label" for="verify-input">Mã chứng nhận hoặc link chia sẻ</label><textarea id="verify-input" rows="5" maxlength="12000" spellcheck="false" autocapitalize="none" autocomplete="off" placeholder="Dán mã IUM1… hoặc link có #verify=…" required aria-describedby="verify-hint"></textarea><p id="verify-hint" class="field-hint">Mã ngắn MAC-… chỉ tìm được trong lịch sử của trình duyệt này.</p><button id="verify-button" class="button button-primary button-wide" type="submit">Kiểm tra xem nào <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 10 3 3 7-7"/></svg></button></form>
+            <span class="eyebrow">TIN BẠN. NHƯNG VẪN SOI.</span><h3>Nó nói nó có Mac?</h3><p class="panel-description">Dán mã hoặc link nó gửi vào đây. Hội sẽ soi xem giấy có bị chỉnh sửa không. Còn nó có nói thật không thì… hỏi lương tâm nó.</p>
+            <form id="verify-form"><label class="field-label" for="verify-input">Mã chứng nhận hoặc link chia sẻ</label><textarea id="verify-input" rows="5" maxlength="12000" spellcheck="false" autocapitalize="none" autocomplete="off" placeholder="Dán mã IUM1… hoặc link có #verify=…" required aria-describedby="verify-hint"></textarea><p id="verify-hint" class="field-hint">Mã ngắn MAC-… chỉ tìm được trong lịch sử của trình duyệt này.</p><button id="verify-button" class="button button-primary button-wide" type="submit">Soi xem nào 🔍</button></form>
             <div class="file-import"><span>Hoặc</span><label class="file-label" for="certificate-file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 2H4v16h12V7ZM11 2v5h5M7 11h6M7 14h4"/></svg> Chọn file chứng nhận .json</label><input id="certificate-file" type="file" accept=".json,application/json"></div>
-            <p class="privacy-note">Kiểm tra được trên Windows, điện thoại, và cả chiếc Mac của bạn.</p>
+            <p class="privacy-note">Soi được trên Windows, điện thoại, cả máy giặt nếu nó có trình duyệt. Hội không kỳ thị lúc soi.</p>
           </div>
           <div id="verification-result" class="verification-result" aria-live="polite">
-            <div class="verify-empty"><div class="empty-shield" aria-hidden="true"><svg viewBox="0 0 72 80"><path d="M36 5 62 14v25c0 18-26 34-26 34S10 57 10 39V14Z"/><path d="m23 39 9 9 18-20"/></svg><span>?</span></div><h3>Chờ một màn flex có căn cứ.</h3><p>Kết quả kiểm tra sẽ hiện ở đây.<br>Hội làm việc rất nghiêm túc với chuyện không nghiêm túc.</p></div>
+            <div class="verify-empty"><div class="empty-shield" aria-hidden="true">🔍</div><h3>Đang chờ một màn flex có căn cứ.</h3><p>Kết quả sẽ hiện ở đây.<br>Hội làm việc rất nghiêm túc với chuyện không nghiêm túc.</p></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="history-section" class="history-section page-width" aria-labelledby="history-title" hidden><div class="history-heading"><div><h2 id="history-title">Giấy tờ của bạn</h2><p>Lưu trên trình duyệt này, tối đa 10 chứng nhận.</p></div><button class="text-button danger-text" id="clear-history" type="button">Xóa lịch sử</button></div><div id="history-list" class="history-list"></div></section>
+    <section id="history-section" class="history-section page-width" aria-labelledby="history-title" hidden><div class="history-heading"><div><h2 id="history-title">Tủ giấy khen của bạn</h2><p>Lưu trên trình duyệt này, tối đa 10 tờ. Khoe vừa phải thôi.</p></div><button class="text-button danger-text" id="clear-history" type="button">Xóa lịch sử</button></div><div id="history-list" class="history-list"></div></section>
 
-    <section id="about" class="about-section page-width" aria-labelledby="about-title"><div class="about-intro"><span class="eyebrow">NGHIÊM TÚC MỘT CHÚT THÔI</span><h2 id="about-title">Không cần lý do lớn.<br>Chỉ cần một chiếc Mac.</h2><p>Một dự án nhỏ để đùa vui với hội bạn.<br>Có giấy để khoe. Có mã để check. Thế thôi.</p><a href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer" class="source-link">Mã nguồn mở trên GitHub</a></div><div class="faq-list">
-      <details><summary>Có phải chứng nhận của Apple không?<span aria-hidden="true">+</span></summary><p>Không. Đây là chứng nhận vui do trang này tạo trong trình duyệt, không do Apple cấp hay xác nhận. Giá trị chính: gửi vào nhóm bạn cho vui.</p></details>
+    <section id="about" class="about-section page-width" aria-labelledby="about-title"><div class="about-intro"><span class="eyebrow">HỎI XOÁY · ĐÁP XOAY</span><h2 id="about-title">Không cần lý do lớn.<br>Chỉ cần một chiếc Mac.</h2><p>Một dự án nhỏ để trêu hội bạn. Có giấy để khoe. Có mã để soi. Có chút thiên vị. Thế thôi.</p><a href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer" class="source-link">Mã nguồn mở trên GitHub →</a></div><div class="faq-list">
+      <details><summary>Có phải chứng nhận của Apple không?<span aria-hidden="true">+</span></summary><p>Không. Đây là chứng nhận vui do trang này tạo trong trình duyệt, không do Apple cấp hay xác nhận. Giá trị chính: gửi vào group chat rồi chờ phản ứng.</p></details>
+      <details><summary>Tôi dùng Windows. Tôi có bị kỳ thị không?<span aria-hidden="true">+</span></summary><p>Có, nhưng nhẹ nhàng và đầy tình thương. Bạn vẫn được soi giấy của bạn bè bằng bất kỳ máy nào. Chỉ có nút “Cấp giấy” là giả vờ không quen bạn.</p></details>
+      <details><summary>Hackintosh có được tính không?<span aria-hidden="true">+</span></summary><p>Nếu trình duyệt của bạn khai là macOS thì hội… không phân biệt được. Bạn đã vất vả cài đặt rồi, hội không nỡ hỏi thêm.</p></details>
       <details><summary>Có Mac là chắc chắn được cấp giấy?<span aria-hidden="true">+</span></summary><p>Trang đọc tín hiệu macOS từ trình duyệt và loại trừ iPad, iPhone, Windows, Linux. Nếu bạn bật chế độ giả lập hoặc trình duyệt ẩn thông tin, kết quả có thể sai. Không có phép thuật xác thực phần cứng nào ở đây.</p></details>
       <details><summary>Mã kiểm tra có bắt được người nói xạo không?<span aria-hidden="true">+</span></summary><p>Mã giúp kiểm tra nội dung khớp với chữ ký tự tạo đi kèm, và phát hiện nội dung bị sửa mà không ký lại. Người rành kỹ thuật vẫn có thể giả thông tin rồi tạo mã mới. Dùng để vui, đừng dùng để trao giải hay kiểm soát truy cập.</p></details>
-      <details><summary>Sao mã ngắn trên ảnh không tra được ở máy khác?<span aria-hidden="true">+</span></summary><p>Trang không có cơ sở dữ liệu chung. Mã ngắn chỉ đối chiếu giấy đã lưu trên trình duyệt này. Muốn bạn bè kiểm tra được, hãy gửi link chia sẻ, mã đầy đủ IUM1… hoặc file chứng nhận .json — chúng mang theo dữ liệu cần kiểm tra.</p></details>
+      <details><summary>Sao mã ngắn trên ảnh không tra được ở máy khác?<span aria-hidden="true">+</span></summary><p>Trang không có cơ sở dữ liệu chung. Mã ngắn chỉ đối chiếu giấy đã lưu trên trình duyệt này. Muốn bạn bè soi được, hãy gửi link chia sẻ, mã đầy đủ IUM1… hoặc file chứng nhận .json — chúng mang theo dữ liệu cần kiểm tra.</p></details>
       <details><summary>Trang lưu những gì về tôi?<span aria-hidden="true">+</span></summary><p>Chứng nhận chứa tên bạn nhập, hệ điều hành, tên trình duyệt, tín hiệu nền tảng và giờ trên máy lúc tạo. Trang lưu lịch sử trên trình duyệt của bạn; không có tài khoản, analytics hoặc máy chủ lưu chứng nhận. Người nhận link sẽ đọc được nội dung đó. Bạn có thể xóa lịch sử bất cứ lúc nào.</p></details>
     </div></section>
-    <section class="closing-note page-width"><span aria-hidden="true">⌘</span><p>Máy nào cũng tốt.<br><strong>Nhưng trang này thiên vị Mac.</strong></p><span class="closing-smile" aria-hidden="true">:)</span></section>
+
+    <section class="closing-note page-width" aria-label="Lời kết"><p>Máy nào cũng tốt.<br><strong>Nhưng trang này thiên vị Mac.</strong></p><span class="closing-smile" aria-hidden="true">:)</span></section>
   </main>
-  <footer class="site-footer page-width"><a class="brand footer-brand" href="#">i’m using a mac<span class="brand-dot">.</span></a><p>Made for fun. Not by Apple.</p><a href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer">Một dự án của Phuc</a></footer>
+
+  <footer class="site-footer page-width"><a class="brand footer-brand" href="#">i’m using a mac<span class="brand-dot">.</span></a><p>Làm trên Mac. Hiển nhiên. Không phải do Apple làm.</p><a href="https://github.com/philngt/iamusingmac" target="_blank" rel="noopener noreferrer">Một dự án của Phuc</a></footer>
+
+  <div id="os-watermark" class="os-watermark" aria-hidden="true" hidden><strong id="os-watermark-title"></strong><span id="os-watermark-text"></span></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <dialog id="copy-dialog"><form method="dialog"><h2>Sao chép để chia sẻ</h2><p>Trình duyệt chưa cho phép sao chép tự động. Chọn và sao chép nội dung bên dưới.</p><textarea id="copy-fallback" rows="5" readonly aria-label="Nội dung cần sao chép"></textarea><button class="button button-primary" type="submit">Đã xong</button></form></dialog>
-  <dialog id="clear-dialog"><form method="dialog"><h2>Xóa giấy tờ trên máy này?</h2><p>Lịch sử trong trình duyệt sẽ bị xóa. Link và file bạn đã gửi vẫn kiểm tra được.</p><div class="dialog-actions"><button class="button button-secondary" value="cancel">Giữ lại</button><button class="button button-dark" value="confirm">Xóa lịch sử</button></div></form></dialog>
-  <noscript><div class="noscript-note">Trang cần JavaScript để nhận diện thiết bị, tạo và kiểm tra chứng nhận. Hãy bật JavaScript rồi tải lại trang.</div></noscript>
+  <dialog id="clear-dialog"><form method="dialog"><h2>Đốt tủ giấy khen trên máy này?</h2><p>Lịch sử trong trình duyệt sẽ bị xóa. Link và file bạn đã gửi vẫn soi được.</p><div class="dialog-actions"><button class="button button-secondary" value="cancel">Giữ lại</button><button class="button button-dark" value="confirm">Xóa lịch sử</button></div></form></dialog>
+  <noscript><div class="noscript-note">Trang cần JavaScript để nhận diện thiết bị, cấp và soi chứng nhận. Hãy bật JavaScript rồi tải lại trang.</div></noscript>
 </body>
 </html>

@@ -12,6 +12,21 @@ let verificationSequence = 0;
 let issuing = false;
 let historyReady = false;
 let historyLoaded = Promise.resolve();
+const ISSUE_LABEL = 'Cấp giấy cho tôi ✦';
+const VERIFY_LABEL = 'Soi xem nào 🔍';
+const ROASTS = [
+  'Có Mac mà không khoe thì cũng như chưa có.',
+  'Windows: “Máy sẽ khởi động lại sau 5 phút.” Mac: “Cứ làm việc đi.”',
+  'Đứa bạn dùng Windows sẽ hỏi “rồi sao?”. Gửi nó link. Rồi im lặng.',
+  'Linux tự build được cả giấy này. Nhưng hội không cấp.',
+  'Notch không phải lỗi. Notch là cá tính.',
+  'Hội không kỳ thị. Hội chỉ lọc hồ sơ rất kỹ.',
+  'Bạn không cần Mac để sống. Nhưng cần giấy này để chứng minh là có.',
+  'Mac không chơi được game? Đúng rồi, vì người dùng Mac bận flex.',
+  'Mua Mac xong ăn mì gói cả tháng. Xứng đáng.',
+  'Hub USB-C là phụ kiện, cái giấy này là bản lĩnh.',
+];
+let roastIndex = 0;
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -55,16 +70,18 @@ function selectMode(mode, { scroll = false, updateHash = true, focus = false } =
 function inspectDevice() {
   device = detectDevice();
   const copy = device.isMac
-    ? { title: 'Đúng hệ rồi. Mời bạn vào hội.', description: 'Trình duyệt báo macOS. Chỉ còn thiếu tên bạn trên giấy.', symbol: '⌘', eyebrow: 'MAC ĐÃ ĐƯỢC NHẬN DIỆN' }
+    ? { title: 'Chuẩn Mac. Hội gật đầu.', description: 'Trình duyệt khai báo macOS. Giờ chỉ thiếu một cái tên để in lên giấy.', symbol: '⌘', eyebrow: '✓ HỒ SƠ HỢP LỆ' }
     : device.os === 'Windows'
-      ? { title: 'Phát hiện Windows. Rất tiếc.', description: 'Hồ sơ gia nhập hội Táo tạm thời bị từ chối. Bạn vẫn được kiểm tra giấy của đứa bạn.', symbol: '⊞', eyebrow: 'CỬA SỔ NÀY CHƯA CÓ TÁO' }
+      ? { title: 'Ồ… Windows.', description: 'Hồ sơ gia nhập bị từ chối một cách rất lịch sự. Bạn vẫn được soi giấy của đứa bạn — đó là quyền con người.', symbol: '⊞', eyebrow: 'PHÁT HIỆN CỬA SỔ' }
       : device.os === 'Linux'
-        ? { title: 'Linux à? Hội rất tôn trọng.', description: 'Bạn có thể tự build cả hệ điều hành. Nhưng giấy này vẫn cần một chiếc Mac.', symbol: '>_', eyebrow: 'SUDO KHÔNG GIÚP ĐƯỢC LẦN NÀY' }
+        ? { title: 'Linux à? Kính nể. Nhưng không.', description: 'Bạn compile được cả kernel, nhưng giấy này cần một chiếc Mac. sudo cũng không cứu được lần này.', symbol: '>_', eyebrow: 'PERMISSION DENIED' }
         : ['iPadOS', 'iOS'].includes(device.os)
-          ? { title: 'Có Táo. Nhưng chưa đúng loại.', description: 'iPhone và iPad dễ thương đấy. Hội này đang tuyển Mac. Bạn vẫn kiểm tra được mọi mã.', symbol: '▯', eyebrow: 'GẦN ĐÚNG RỒI ĐÓ' }
+          ? { title: 'Có Táo. Nhưng là táo con.', description: 'iPhone và iPad dễ thương thật. Hội đang tuyển Mac. Bạn vẫn soi được mọi mã.', symbol: '▯', eyebrow: 'GẦN ĐÚNG RỒI ĐÓ' }
           : device.os === 'Android'
-            ? { title: 'Android gửi lời chào.', description: 'Bạn đang ở bên kia vườn Táo. Hãy dùng Mac để nhận giấy, hoặc kiểm tra mã của bạn bè.', symbol: '◉', eyebrow: 'KHÁCH QUÝ TỪ HỆ KHÁC' }
-            : { title: 'Hội chưa nhận ra máy bạn.', description: 'Trình duyệt chưa cung cấp tín hiệu macOS nhất quán. Thử tắt giả lập rồi kiểm tra lại nhé.', symbol: '?', eyebrow: 'CHƯA ĐỦ DỮ KIỆN' };
+            ? { title: 'Robot xanh ghé chơi.', description: 'Bạn đang đứng bên kia hàng rào vườn Táo. Muốn nhận giấy thì mở trên Mac, còn soi mã thì cứ tự nhiên.', symbol: '◉', eyebrow: 'KHÁCH TỪ HỆ KHÁC' }
+            : device.os === 'ChromeOS'
+              ? { title: 'Chromebook? Hội tưởng đây là một tab Chrome.', description: 'Đáng yêu, nhẹ nhàng, nhưng không phải Mac. Soi mã thì vẫn thoải mái.', symbol: '◎', eyebrow: 'TAB THỨ 47' }
+              : { title: 'Máy gì đây? Hội chịu.', description: 'Trình duyệt không khai rõ macOS. Tắt giả lập rồi bấm soi lại nhé.', symbol: '?', eyebrow: 'HỒ SƠ MẬP MỜ' };
   $('#device-status').className = `device-status ${device.isMac ? 'mac' : 'non-mac'}`;
   $('#device-title').textContent = copy.title;
   $('#device-description').textContent = copy.description;
@@ -77,10 +94,37 @@ function inspectDevice() {
     row.append(element('dt', '', label), element('dd', '', value));
     facts.append(row);
   }
+  updateWatermark();
   $('#issue-button').disabled = !historyReady || !device.isMac || !canUseCrypto || issuing;
   if (!canUseCrypto) feedback('Cần trình duyệt hiện đại và HTTPS (hoặc localhost) để cấp, kiểm tra giấy. Không mở trực tiếp file HTML.', true);
-  else if (!device.isMac) feedback('Mở trang này trên Mac để nhận chứng nhận. Xác minh mã thì máy nào cũng được.');
-  else feedback(historyReady ? 'Đã đủ điều kiện. Hội đang chờ tên của bạn.' : 'Hội đang mở sổ chứng nhận. Chờ một chút nhé.');
+  else if (!device.isMac) feedback('Nút này chỉ mở khi có Mac. Soi mã thì máy nào cũng được.');
+  else feedback(historyReady ? 'Đủ điều kiện. Hội đang chờ tên của bạn.' : 'Hội đang lục sổ. Chờ xíu.');
+}
+
+function updateWatermark() {
+  const marks = {
+    Windows: ['Kích hoạt macOS', 'Mua một chiếc Mac để ẩn dòng chữ này.', false],
+    Linux: ['$ sudo apt install macos', 'E: Unable to locate package macos', true],
+    ChromeOS: ['Kích hoạt macOS', 'Chromebook không đủ điều kiện. Rất tiếc.', false],
+  };
+  const mark = !device.isMac && marks[device.os];
+  $('#os-watermark').hidden = !mark;
+  if (!mark) return;
+  $('#os-watermark-title').textContent = mark[0];
+  $('#os-watermark-text').textContent = mark[1];
+  $('#os-watermark').classList.toggle('terminal', mark[2]);
+}
+
+function nextRoast() {
+  roastIndex = (roastIndex + 1) % ROASTS.length;
+  $('#roast-line').textContent = ROASTS[roastIndex];
+  $('#roast-index').textContent = String(roastIndex + 1);
+}
+
+function tickClock() {
+  try {
+    $('#menubar-clock').textContent = new Intl.DateTimeFormat('vi-VN', { weekday: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date());
+  } catch { /* The clock is decoration only. */ }
 }
 
 function showCertificate(result) {
@@ -89,7 +133,7 @@ function showCertificate(result) {
   $('#cert-os').textContent = result.certificate.os;
   $('#cert-date').textContent = formatDate(result.certificate.issuedAt);
   $('#cert-id').textContent = result.id;
-  $('#preview-label').textContent = 'CHÚC MỪNG. BẠN ĐÃ CÓ GIẤY.';
+  $('#preview-label').textContent = 'CHÚC MỪNG. GIỜ ĐI KHOE ĐI.';
   $('#preview-state').textContent = 'Đã tự cấp';
   $('#preview-state').classList.add('issued');
   $('#certificate-card').classList.add('issued');
@@ -102,7 +146,7 @@ function resetCertificatePreview() {
   $('#cert-name').textContent = $('#certificate-name').value.trim() || 'Tên của bạn';
   $('#cert-date').textContent = 'Sau khi cấp giấy';
   $('#cert-id').textContent = 'BẢN MẪU · CHƯA PHÁT HÀNH';
-  $('#preview-label').textContent = 'CHỨNG NHẬN TƯƠNG LAI CỦA BẠN';
+  $('#preview-label').textContent = 'GIẤY TƯƠNG LAI CỦA BẠN';
   $('#preview-state').textContent = 'Xem trước';
   $('#preview-state').classList.remove('issued');
   $('#certificate-card').classList.remove('issued');
@@ -140,10 +184,10 @@ function renderHistory() {
     const info = element('div', 'history-info');
     info.append(element('h3', 'history-name', record.certificate.name), element('p', 'history-meta', `${formatDate(record.certificate.issuedAt, true)} · ${record.id}`));
     const actions = element('div', 'history-actions');
-    const view = element('button', 'text-button', 'Xem giấy');
+    const view = element('button', 'text-button', 'Ngắm lại');
     view.type = 'button';
     view.addEventListener('click', () => { showCertificate(record); selectMode('create', { scroll: true }); });
-    const check = element('button', 'button button-white', 'Xác minh');
+    const check = element('button', 'button button-white', 'Soi giấy');
     check.type = 'button';
     check.addEventListener('click', () => { selectMode('verify', { scroll: true }); $('#verify-input').value = record.token; runVerification(record.token); });
     actions.append(view, check);
@@ -204,49 +248,73 @@ function wrapCanvasText(ctx, text, maxWidth) {
 
 async function downloadPNG(record) {
   try {
+    const W = 1800, H = 1260;
     const canvas = document.createElement('canvas');
-    canvas.width = 1800;
-    canvas.height = 1260;
+    canvas.width = W;
+    canvas.height = H;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas unavailable');
     const font = '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif';
-    const bg = ctx.createLinearGradient(0, 0, 1800, 1260);
-    bg.addColorStop(0, '#eef0ff'); bg.addColorStop(1, '#e1ebff');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, 1800, 1260);
-    roundRect(ctx, 80, 70, 1640, 1120, 38, '#ffffff');
-    ctx.strokeStyle = '#e5e7f2'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(160, 270); ctx.lineTo(1640, 270); ctx.stroke();
-    roundRect(ctx, 160, 140, 82, 82, 20, '#3e5aef');
-    ctx.fillStyle = '#ffffff'; ctx.font = `50px ${font}`; ctx.textAlign = 'center'; ctx.fillText('⌘', 201, 198);
-    ctx.textAlign = 'left'; ctx.fillStyle = '#181b29'; ctx.font = `700 28px ${font}`;
-    ctx.fillText('HỘI NGƯỜI ĐANG DÙNG MAC', 270, 176);
-    ctx.fillStyle = '#777c8f'; ctx.font = `22px ${font}`; ctx.fillText('THE VERY UNOFFICIAL MAC CLUB', 270, 212);
-    ctx.textAlign = 'right'; ctx.fillStyle = '#3e5aef'; ctx.font = `700 26px ${font}`; ctx.fillText('i’m using a mac.', 1640, 185);
-    ctx.textAlign = 'center'; ctx.fillStyle = '#7a7f93'; ctx.font = `600 23px ${font}`; ctx.fillText('TRÂN TRỌNG XÁC NHẬN', 900, 365);
-    let nameSize = 88;
-    ctx.font = `700 ${nameSize}px ${font}`;
-    while (ctx.measureText(record.certificate.name).width > 1420 && nameSize > 52) { nameSize -= 2; ctx.font = `700 ${nameSize}px ${font}`; }
-    const nameLines = wrapCanvasText(ctx, record.certificate.name, 1420);
-    ctx.fillStyle = '#3e5aef';
-    nameLines.slice(0, 2).forEach((line, index) => ctx.fillText(line, 900, nameLines.length > 1 ? 450 + index * 66 : 480));
-    ctx.fillStyle = '#181b29'; ctx.font = `600 48px ${font}`; ctx.fillText('đang dùng Mac.', 900, 620);
-    ctx.fillStyle = '#6d7284'; ctx.font = `30px ${font}`; ctx.fillText('Và muốn mọi người biết điều đó.', 900, 675);
-    ctx.textAlign = 'left'; ctx.fillStyle = '#7a7f93'; ctx.font = `600 20px ${font}`;
-    ctx.fillText('HỆ ĐIỀU HÀNH', 160, 820); ctx.fillText('NGÀY GIA NHẬP', 620, 820);
-    ctx.fillStyle = '#181b29'; ctx.font = `600 30px ${font}`;
-    ctx.fillText('macOS', 160, 866); ctx.fillText(formatDate(record.certificate.issuedAt, true), 620, 866);
-    ctx.save(); ctx.translate(1490, 810); ctx.rotate(-0.18);
-    ctx.beginPath(); ctx.arc(0, 0, 90, 0, Math.PI * 2); ctx.fillStyle = '#d7f6b0'; ctx.fill();
-    ctx.strokeStyle = '#53802d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 78, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = '#304b1d'; ctx.textAlign = 'center'; ctx.font = `800 26px ${font}`; ctx.fillText('JUST', 0, -15); ctx.fillText('FOR FUN', 0, 19); ctx.font = `22px ${font}`; ctx.fillText('✦ ✦ ✦', 0, 53); ctx.restore();
-    ctx.strokeStyle = '#e5e7f2'; ctx.beginPath(); ctx.moveTo(160, 945); ctx.lineTo(1640, 945); ctx.stroke();
-    ctx.textAlign = 'left'; ctx.fillStyle = '#4e5365'; ctx.font = `23px ui-monospace, monospace`; ctx.fillText(record.id, 160, 997);
-    ctx.fillStyle = '#777c8f'; ctx.font = `22px ${font}`; ctx.fillText('Mã đối chiếu · Kiểm tra bằng link chia sẻ hoặc file chứng nhận đi kèm.', 160, 1042);
-    ctx.fillStyle = '#989caa'; ctx.font = `21px ${font}`; ctx.fillText('Chứng nhận vui từ trình duyệt. Không liên quan đến Apple.', 160, 1120);
+    const mono = 'ui-monospace, Menlo, Consolas, monospace';
+    const ink = '#141414', paper = '#fffdf7', blue = '#2f55ff', yellow = '#ffd94a', pink = '#ff7eb6', muted = '#5d5a52', soft = '#8a857a';
+    // Dotted cream desk.
+    ctx.fillStyle = '#f4efe3'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#ddd4c0';
+    for (let y = 11; y < H; y += 30) for (let x = 11; x < W; x += 30) { ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill(); }
+    // Window with a hard shadow.
+    roundRect(ctx, 96, 76, 1640, 1120, 34, ink);
+    ctx.lineWidth = 6;
+    roundRect(ctx, 80, 60, 1640, 1120, 34, paper, ink);
+    ctx.save(); ctx.beginPath(); ctx.roundRect(83, 63, 1634, 92, [31, 31, 0, 0]); ctx.clip();
+    for (let y = 63, i = 0; y < 155; y += 4, i++) { ctx.fillStyle = i % 2 ? '#e2dac6' : '#efe9da'; ctx.fillRect(83, y, 1634, 4); }
+    ctx.restore();
+    ctx.fillStyle = ink; ctx.fillRect(80, 152, 1640, 6);
+    [['#ff5f57', 140], ['#febc2e', 186], ['#28c840', 232]].forEach(([color, x]) => { ctx.beginPath(); ctx.arc(x, 107, 15, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = ink; ctx.stroke(); });
+    ctx.textAlign = 'center'; ctx.fillStyle = ink; ctx.font = `700 26px ${mono}`; ctx.fillText(`${record.id}.png — hội-táo.app`, 900, 116);
+    // Header row.
+    roundRect(ctx, 160, 205, 84, 84, 20, ink);
+    ctx.fillStyle = yellow; ctx.font = `48px ${font}`; ctx.fillText('⌘', 202, 264);
+    ctx.textAlign = 'left'; ctx.fillStyle = ink; ctx.font = `800 30px ${font}`; ctx.fillText('HỘI NGƯỜI ĐANG DÙNG MAC', 272, 243);
+    ctx.fillStyle = soft; ctx.font = `22px ${mono}`; ctx.fillText('THE VERY UNOFFICIAL MAC CLUB', 272, 279);
+    ctx.textAlign = 'right'; ctx.fillStyle = blue; ctx.font = `800 30px ${font}`; ctx.fillText('i’m using a mac.', 1640, 258);
+    ctx.fillStyle = ink; ctx.fillRect(160, 325, 1480, 4);
+    // Name block.
+    ctx.textAlign = 'center'; ctx.fillStyle = soft; ctx.font = `700 24px ${mono}`; ctx.fillText('TRÂN TRỌNG XÁC NHẬN', 900, 410);
+    let nameSize = 96;
+    ctx.font = `900 ${nameSize}px ${font}`;
+    while (ctx.measureText(record.certificate.name).width > 1400 && nameSize > 54) { nameSize -= 2; ctx.font = `900 ${nameSize}px ${font}`; }
+    const nameLines = wrapCanvasText(ctx, record.certificate.name, 1400);
+    ctx.fillStyle = blue;
+    nameLines.slice(0, 2).forEach((line, index) => ctx.fillText(line, 900, nameLines.length > 1 ? 490 + index * 72 : 520));
+    ctx.font = `700 50px ${font}`;
+    const statement = 'đang dùng Mac.';
+    const sw = ctx.measureText(statement).width;
+    ctx.fillStyle = yellow; ctx.fillRect(900 - sw / 2 - 14, 612, sw + 28, 62);
+    ctx.fillStyle = ink; ctx.fillText(statement, 900, 660);
+    ctx.fillStyle = muted; ctx.font = `30px ${font}`; ctx.fillText('Và sẽ nhắc chuyện đó ít nhất 3 lần mỗi ngày.', 900, 728);
+    // Meta + stamp.
+    ctx.setLineDash([14, 10]); ctx.lineWidth = 3; ctx.strokeStyle = ink;
+    ctx.beginPath(); ctx.moveTo(160, 790); ctx.lineTo(1640, 790); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.fillStyle = soft; ctx.font = `700 21px ${mono}`;
+    ctx.fillText('HỆ ĐIỀU HÀNH', 160, 852); ctx.fillText('NGÀY GIA NHẬP', 560, 852);
+    ctx.fillStyle = ink; ctx.font = `800 34px ${font}`;
+    ctx.fillText('macOS', 160, 900); ctx.fillText(formatDate(record.certificate.issuedAt, true), 560, 900);
+    ctx.save(); ctx.translate(1480, 880); ctx.rotate(0.22);
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(0, 0, 104, 0, Math.PI * 2); ctx.fillStyle = pink; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = ink; ctx.stroke();
+    ctx.setLineDash([10, 8]); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 86, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `900 40px ${font}`; ctx.fillText('100%', 0, -4); ctx.font = `900 26px ${font}`; ctx.fillText('THIÊN VỊ', 0, 34);
+    ctx.restore();
+    ctx.setLineDash([]);
+    // Footer.
+    ctx.fillStyle = ink; ctx.fillRect(160, 990, 1480, 4);
+    ctx.textAlign = 'left'; ctx.fillStyle = ink; ctx.font = `700 26px ${mono}`; ctx.fillText(record.id, 160, 1046);
+    ctx.fillStyle = muted; ctx.font = `23px ${font}`; ctx.fillText('Mã đối chiếu · Soi bằng link chia sẻ hoặc file chứng nhận đi kèm.', 160, 1090);
+    ctx.fillStyle = soft; ctx.font = `21px ${font}`; ctx.fillText('Chứng nhận vui từ trình duyệt. Không liên quan đến Apple. Người dùng Windows vui lòng không ghen tị.', 160, 1136);
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
     if (!blob) throw new Error('PNG unavailable');
     download(blob, `${record.id}.png`);
-    toast('Ảnh đã sẵn sàng. Nhớ gửi kèm link để đứa bạn còn check.');
+    toast('Ảnh xong. Nhớ gửi kèm link để đứa bạn còn soi.');
   } catch { toast('Chưa tải được ảnh trên trình duyệt này. Bạn vẫn có thể tải file chứng nhận hoặc sao chép link.'); }
 }
 
@@ -262,12 +330,12 @@ function renderVerification(result) {
   panel.className = `verification-result ${result.valid ? 'is-valid' : 'is-invalid'}`;
   const icon = element('div', 'result-icon', result.valid ? '✓' : '!');
   icon.setAttribute('aria-hidden', 'true');
-  panel.append(icon, element('p', 'result-eyebrow', result.valid ? 'GIẤY TỜ KHỚP. MỜI TIẾP TỤC FLEX.' : 'HỘI CẦN KIỂM TRA LẠI'), element('h3', 'result-title', result.valid ? 'Chữ ký hợp lệ.' : result.code === 'SHORT_CODE' ? 'Cần mã đầy đủ nhé.' : 'Mã này chưa qua cửa.'));
+  panel.append(icon, element('p', 'result-eyebrow', result.valid ? 'GIẤY KHỚP. CHO PHÉP FLEX TIẾP.' : 'HỘI NGHI NGỜ'), element('h3', 'result-title', result.valid ? 'Chữ ký hợp lệ. Giấy chưa bị sửa.' : result.code === 'SHORT_CODE' ? 'Mã ngắn thôi chưa đủ đâu.' : 'Mã này trượt vòng gửi xe.'));
   if (!result.valid) {
-    panel.append(element('p', 'result-description', result.message), element('p', 'result-footnote', 'Kiểm tra xem bạn đã sao chép đủ mã chưa. Bạn cũng có thể dùng link chia sẻ hoặc file .json.'));
+    panel.append(element('p', 'result-description', result.message), element('p', 'result-footnote', 'Có thể đứa bạn copy thiếu, hoặc nó đang “sáng tạo”. Thử lại bằng link chia sẻ hoặc file .json.'));
     return;
   }
-  panel.append(element('p', 'result-description', 'Nội dung khớp với chữ ký tự tạo đi kèm. Chiếc giấy này đã sẵn sàng để vào nhóm chat.'));
+  panel.append(element('p', 'result-description', 'Nội dung khớp với chữ ký tự tạo đi kèm. Còn nó có Mac thật không thì… hỏi lương tâm nó.'));
   const details = element('dl', 'result-details');
   resultField(details, 'Chủ nhân màn flex', result.certificate.name);
   resultField(details, 'Hệ điều hành ghi nhận', result.certificate.os);
@@ -282,7 +350,7 @@ function renderVerification(result) {
   const png = element('button', 'button button-white', 'Tải ảnh PNG');
   const file = element('button', 'text-button', 'Tải file chứng nhận');
   for (const button of [share, png, file]) button.type = 'button';
-  share.addEventListener('click', () => copyText(shareURL(result), 'Đã sao chép link. Xin hãy flex có trách nhiệm.'));
+  share.addEventListener('click', () => copyText(shareURL(result), 'Đã sao chép link. Flex có trách nhiệm nhé.'));
   png.addEventListener('click', () => downloadPNG(result));
   file.addEventListener('click', () => downloadJSON(result));
   actions.append(share, png, file); panel.append(actions);
@@ -290,7 +358,7 @@ function renderVerification(result) {
 
 async function runVerification(input, sequence = ++verificationSequence) {
   $('#verify-button').disabled = true;
-  $('#verify-button').textContent = 'Hội đang xem giấy…';
+  $('#verify-button').textContent = 'Hội đang soi kính lúp…';
   await historyLoaded;
   if (sequence !== verificationSequence) return;
   let candidate = input.trim();
@@ -302,7 +370,7 @@ async function runVerification(input, sequence = ++verificationSequence) {
   if (sequence !== verificationSequence) return;
   renderVerification(result);
   $('#verify-button').disabled = false;
-  $('#verify-button').textContent = 'Kiểm tra xem nào ✓';
+  $('#verify-button').textContent = VERIFY_LABEL;
 }
 
 $('#issue-form').addEventListener('submit', async event => {
@@ -312,26 +380,26 @@ $('#issue-form').addEventListener('submit', async event => {
   if (!device.isMac || !canUseCrypto) return;
   issuing = true;
   $('#issue-button').disabled = true;
-  $('#issue-button').textContent = 'Hội đang đóng dấu…';
+  $('#issue-button').textContent = 'Hội đang đóng dấu… cộp!';
   try {
     const record = await issueCertificate({ name: $('#certificate-name').value, device });
     showCertificate(record);
     savedCertificates = [record, ...savedCertificates.filter(item => item.id !== record.id)].slice(0, MAX_HISTORY);
     const saved = persistHistory();
     renderHistory();
-    feedback(saved ? 'Đã cấp giấy. Chính thức có thêm một thứ để gửi vào nhóm.' : 'Đã cấp giấy. Hãy tải file hoặc sao chép link vì trình duyệt không lưu được lịch sử.');
-    if (saved) toast('Chúc mừng. Bạn có Mac. Và bây giờ có cả giấy.');
+    feedback(saved ? 'Đã cấp giấy. Chính thức có thêm lý do để nhắn vào group.' : 'Đã cấp giấy. Hãy tải file hoặc sao chép link vì trình duyệt không lưu được lịch sử.');
+    if (saved) toast('Chúc mừng. Bạn có Mac. Giờ có cả giấy. Đứa bạn thì không.');
   } catch (error) { feedback(error.message || 'Hội gặp trục trặc. Hãy thử lại nhé.', true); }
   finally {
     issuing = false;
     $('#issue-button').disabled = !device.isMac || !canUseCrypto;
-    $('#issue-button').textContent = 'Tạo chứng nhận của tôi ✦';
+    $('#issue-button').textContent = ISSUE_LABEL;
   }
 });
 
 $('#certificate-name').addEventListener('input', () => { if (!currentCertificate) $('#cert-name').textContent = $('#certificate-name').value.trim() || 'Tên của bạn'; });
-$('#recheck-button').addEventListener('click', () => { inspectDevice(); toast(device.isMac ? 'Đúng là Mac. Hội đã ghi nhận.' : `Hội vẫn thấy ${device.os === 'Unknown' ? 'tín hiệu chưa rõ' : device.os}. Chưa nhận diện được Mac nhé.`); });
-$('#copy-link').addEventListener('click', () => { if (currentCertificate) copyText(shareURL(currentCertificate), 'Đã sao chép link. Gửi cho đứa bạn thôi.'); });
+$('#recheck-button').addEventListener('click', () => { inspectDevice(); toast(device.isMac ? 'Đúng là Mac. Hội đã ghi nhận.' : `Soi lại rồi. Vẫn là ${device.os === 'Unknown' ? 'một hệ bí ẩn' : device.os}. Hội không đổi ý đâu.`); });
+$('#copy-link').addEventListener('click', () => { if (currentCertificate) copyText(shareURL(currentCertificate), 'Đã sao chép link. Giờ dán vào group và chờ phản ứng.'); });
 $('#copy-code').addEventListener('click', () => { if (currentCertificate) copyText(currentCertificate.token, 'Đã sao chép mã đầy đủ. Máy nào cũng kiểm tra được.'); });
 $('#download-json').addEventListener('click', () => { if (currentCertificate) downloadJSON(currentCertificate); });
 $('#download-image').addEventListener('click', () => { if (currentCertificate) downloadPNG(currentCertificate); });
@@ -339,7 +407,7 @@ $('#verify-form').addEventListener('submit', event => { event.preventDefault(); 
 $('#verify-input').addEventListener('input', () => {
   verificationSequence++;
   $('#verify-button').disabled = false;
-  $('#verify-button').textContent = 'Kiểm tra xem nào ✓';
+  $('#verify-button').textContent = VERIFY_LABEL;
 });
 $('#certificate-file').addEventListener('change', async event => {
   const file = event.target.files?.[0];
@@ -350,7 +418,7 @@ $('#certificate-file').addEventListener('change', async event => {
   $('#verify-button').textContent = 'Hội đang đọc file…';
   if (file.size > 24000) {
     $('#verify-button').disabled = false;
-    $('#verify-button').textContent = 'Kiểm tra xem nào ✓';
+    $('#verify-button').textContent = VERIFY_LABEL;
     renderVerification({ valid: false, message: 'File quá lớn. Hãy chọn file chứng nhận .json dưới 24 KB.' });
   } else {
     try {
@@ -361,7 +429,7 @@ $('#certificate-file').addEventListener('change', async event => {
     } catch {
       if (sequence !== verificationSequence) return;
       $('#verify-button').disabled = false;
-      $('#verify-button').textContent = 'Kiểm tra xem nào ✓';
+      $('#verify-button').textContent = VERIFY_LABEL;
       renderVerification({ valid: false, message: 'Chưa đọc được file. Hãy chọn lại hoặc dán mã đầy đủ.' });
     }
   }
@@ -401,6 +469,15 @@ async function routeHash() {
   }
 }
 
+$('#roast-button').addEventListener('click', nextRoast);
+$('#motion-toggle').addEventListener('click', () => {
+  const paused = document.body.classList.toggle('motion-paused');
+  $('#motion-toggle').setAttribute('aria-pressed', String(paused));
+  $('#motion-toggle').setAttribute('aria-label', paused ? 'Chạy tiếp chuyển động' : 'Tạm dừng chuyển động');
+  $('#motion-toggle').textContent = paused ? 'Chạy tiếp' : 'Tạm dừng';
+});
+tickClock();
+setInterval(tickClock, 30000);
 inspectDevice();
 historyLoaded = loadHistory();
 await historyLoaded;

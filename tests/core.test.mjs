@@ -72,6 +72,29 @@ test('rejects contradictory hints and mobile-reported Macs', () => {
   assert.equal(detectDevice({ ...macChrome, userAgent: 'Mozilla/5.0 (X11; Linux x86_64)' }).isMac, false);
 });
 
+test('recognizes the ChromeOS Linux platform alias while rejecting conflicting Mac signals', () => {
+  const chromeOS = {
+    userAgent: 'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
+    platform: 'Linux x86_64', maxTouchPoints: 0,
+    userAgentData: { platform: 'Chrome OS', mobile: false },
+  };
+  for (const nav of [chromeOS, { ...chromeOS, userAgentData: undefined }]) {
+    const result = detectDevice(nav);
+    assert.equal(result.os, 'ChromeOS');
+    assert.equal(result.isMac, false);
+    assert.equal(result.signals.at(-1).value, 'Nhất quán');
+  }
+  for (const nav of [
+    { ...chromeOS, platform: 'MacIntel' },
+    { ...chromeOS, userAgent: macSafari.userAgent },
+    { ...chromeOS, userAgentData: { platform: 'macOS', mobile: false } },
+  ]) {
+    const result = detectDevice(nav);
+    assert.equal(result.isMac, false);
+    assert.equal(result.os, 'Unknown');
+  }
+});
+
 test('can use hints-only or user-agent-only Macs; blocked navigator getters stay safe', () => {
   assert.equal(detectDevice({ userAgentData: { platform: 'macOS', mobile: false } }).isMac, true);
   const fallback = detectDevice({ userAgent: macSafari.userAgent });

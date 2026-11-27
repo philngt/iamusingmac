@@ -1,24 +1,30 @@
 # I’m using a Mac.
 
-**Hội người đang dùng Mac. Có bằng hẳn hoi.**
+**Hội người đang dùng Mac. Có giấy hẳn hoi. Thiên vị công khai.**
 
-`iamusingmac` là một website vui để flex chiếc Mac với bạn bè: mở trang, nhận chứng nhận mang tên mình, rồi gửi link cho đứa bạn đang dùng Windows kiểm tra. Bạn ấy vẫn verify được. Chỉ có hồ sơ gia nhập hội là… tạm bị từ chối.
+![Giao diện trang chủ: tiêu đề “Yep. I’m using a Mac.”, chứng nhận mẫu đè lên một hộp thoại lỗi “không phản hồi”](docs/preview.png)
+
+`iamusingmac` là một website để flex chiếc Mac với bạn bè: mở trang, nhận giấy chứng nhận mang tên mình, rồi gửi link cho đứa bạn dùng Windows. Nó vẫn soi được giấy của bạn — hội không kỳ thị lúc soi. Chỉ có hồ sơ gia nhập của nó là… bị từ chối một cách rất lịch sự.
 
 Mã nguồn: [philngt/iamusingmac](https://github.com/philngt/iamusingmac).
 
 ## Cách flex
 
 1. Mở trang trên Mac và để trình duyệt tự khai báo nền tảng.
-2. Điền tên bạn muốn in trên chứng nhận.
-3. Nhận chứng nhận có tên, ngày tạo và mã riêng.
-4. Sao chép link gửi cho bạn bè. Người nhận mở link hoặc dán mã đầy đủ/file JSON vào trang để kiểm tra.
+2. Điền tên bạn muốn in lên giấy. Càng oách càng tốt.
+3. Nhận chứng nhận có tên, ngày gia nhập và mã riêng.
+4. Sao chép link gửi vào group chat. Người nhận mở link hoặc dán mã đầy đủ/file JSON vào trang để soi.
+5. Chờ ai đó hỏi “rồi sao?”. Đó chính là mục đích.
 
 | Bạn đang dùng gì? | Hội phản hồi thế nào? |
 | --- | --- |
-| Mac | Mời nhận chứng nhận để đem khoe |
-| Windows | Hồ sơ hội Táo tạm bị từ chối |
-| Linux | Một lời trêu riêng, với sự tôn trọng dành cho người dùng Linux |
-| Điện thoại hoặc tablet | Xem và kiểm tra chứng nhận được; nhận bằng Mac thì cần mở trên Mac |
+| Mac | “Chuẩn Mac. Hội gật đầu.” Mời nhận giấy |
+| Windows | “Ồ… Windows.” Hồ sơ bị từ chối, kèm watermark *Kích hoạt macOS* ở góc màn hình |
+| Linux | “Kính nể. Nhưng không.” `sudo` cũng không cứu được |
+| ChromeOS | Bị nhầm thành một tab Chrome |
+| iPhone, iPad, Android | Soi giấy thoải mái; nhận giấy thì cần mở trên Mac |
+
+Trên trang còn có bản tin chạy chữ, nút “cà khịa thêm phát nữa” và một bảng so sánh khách quan tuyệt đối (độc lập với sự thật). Hội cũng tự cà khịa Mac — hub USB-C, chơi game, giá một quả thận — cho công bằng.
 
 Chứng nhận đã tạo nằm trong lịch sử của trình duyệt để mở lại. Khi gửi sang máy khác, dùng **link, mã đầy đủ `IUM1.…` hoặc file JSON**; ID ngắn `MAC-…` chỉ tra được trong lịch sử đã lưu của chính trình duyệt đó.
 
@@ -96,10 +102,11 @@ Link dùng fragment `#verify=IUM1.…`, nên chạy dưới `/iamusingmac/` trê
 | File/thư mục | Vai trò |
 | --- | --- |
 | `dist/index.html` | Giao diện và cấu trúc nội dung |
-| `dist/styles.css` | Giao diện responsive |
-| `dist/app.mjs` | Tương tác, chia sẻ, lịch sử cục bộ |
+| `dist/styles.css` | Giao diện retro-Mac responsive (viền đậm, bóng đổ cứng, tôn trọng `prefers-reduced-motion`) |
+| `dist/app.mjs` | Tương tác, lời thoại theo hệ điều hành, ảnh PNG, chia sẻ, lịch sử cục bộ |
 | `dist/core.mjs` | Nhận diện thiết bị, tạo và kiểm tra chứng nhận |
 | `tests/` | Kiểm tra tự động với Node.js |
+| `docs/preview.png` | Ảnh xem trước cho README (không được deploy) |
 | `scripts/check-static.mjs` | Kiểm tra asset, import và đường dẫn cho Pages |
 | `.github/workflows/pages.yml` | Kiểm tra và triển khai tự động |
 
